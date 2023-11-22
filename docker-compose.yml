@@ -1,0 +1,22 @@
+services:
+  java_app: #esto es un servicio llamado java_app
+    container_name: m5-backend # nombre del contenedor
+    image: task-list-spring:1.0.0 #nombre de la imagen
+    build: . # ubicación del archivo Dockerfile
+    restart: unless-stopped # se reinicia siempre, a no ser que se pause manualmente
+    ports: # Puertos que se exponen
+      - 8080:8080
+    environment: # se reemplaza la ruta de la base de datos. En vez de "localhost" se dirige al contenedor "m5-mysql"
+      SPRING_DATASOURCE_URL: jdbc:mysql://m5-mysql:3306/softekk
+    depends_on: # "indica que depende este servicio de otro, en este caso java_bd
+      - java_db
+
+    # servicio java_db, contiene las configuraciones para la base de datos
+  java_db:
+    container_name: m5-mysql
+    image: mysql:8.0.33
+    ports:
+      - 3307:3306  # puerto donde se va a levantar
+    environment:
+      MYSQL_DATABASE: softekk #nombre de la base de datos
+      MYSQL_ROOT_PASSWORD: 12345  # contraseña de la base de datos
